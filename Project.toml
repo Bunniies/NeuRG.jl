@@ -1,0 +1,4 @@
+name = "NeuRG"
+uuid = "64b8e212-6eb7-4df0-9efe-2bed30eca314"
+authors = ["Alessandro Conigli <alessandroconigli@gmail.com>"]
+version = "0.1.0"
