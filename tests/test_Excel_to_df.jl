@@ -1,4 +1,4 @@
-# using Revise
+using Revise
 using NeuRG
 using Serialization
 
@@ -12,7 +12,10 @@ country_dict  = get_dengue_data(path_excel, sheet, ref)
 # save data in database/
 save_data(country_dict; disease="dengue")
 
-# read data in internal database
+# use built in function to read data stored in database/disease
+res = read_DataFrame(["Brazil", "Ecuador","Argentina"]; disease="dengue")
+
+# read data brute force from  /database/dengue
 path_read = "/Users/alessandroconigli/.julia/dev/NeuRG/database/dengue/Ecuador.jls"
 df_Ecudaor_cases = deserialize(path_read)
 

@@ -1,8 +1,8 @@
-"""@doc raw
-    get_dengue_data(path, sheet, ref) 
-    where sheet and ref are the Excel sheet name and the range of cells to read, respectively
-
-    The function returns a dictionary for each country containing a DataFrame with date and cases
+@doc raw"""
+    get_dengue_data(path, sheet, ref)
+     
+    where sheet and ref are the Excel sheet name and the range of cells to read, respectively.
+    The function returns a dictionary for each country containing a DataFrame with date and cases.
 """
 function get_dengue_data(path::String, sheet::String, ref::String)
 
@@ -13,21 +13,19 @@ function get_dengue_data(path::String, sheet::String, ref::String)
     filter!(x-> !ismissing(x), df) 
 
     countries = unique(df.country)
-
     country_dict = Dict()
     for c in countries
         country_dict[c] = filter(row->row.country == c, df)
         select!(country_dict[c], [:date, :cases])
     end
-
     return country_dict
 end
 
-"""@doc raw
+@doc raw"""
     save_data(dict::Dict; disease="dengue")
     
     Save a dictionary of DataFrame into the database/disease folder. 
-    By default disease="dengue"
+    By default disease="dengue".
 """
 function save_data(dict::Dict; disease="dengue")
 
@@ -36,14 +34,32 @@ function save_data(dict::Dict; disease="dengue")
         error("No \"$(disease)\" folder found in $(path)")
     end
 
-    kvals = collect(keys(dict))
-    for k in kvals
+    for k in collect(keys(dict))
         path_aux = joinpath(path, disease, string(k,".jls"))
         serialize(path_aux, dict[k])
     end
     return nothing
 end
 
+@doc raw"""
+    read_DataFrame(countries::Vector{String}; disease="dengue")
+
+Given a vector of countries and a disease this function returns a dictionary where each
+element is a DataFrame of a country 
+
+read_DataFrame(["Argentina", "Brazil"], disease="dengue)
+"""
+function read_DataFrame(countries::Vector{String}; disease="dengue")
+    sort!(countries)
+    path = joinpath(join(split(@__DIR__, "/")[1:end-2], "/"), "database", disease)
+    path_countries = filter!(x-> split(basename(x),".")[1] in countries,  readdir(path,join=true))
+
+    res = Dict()
+    for (k,c) in enumerate(countries)
+        res[c] = deserialize(path_countries[k])
+    end
+    return res 
+end
 
 # data Ecuador average temperature
 t_Ecuador_2021 = [77.16 , 79.22 , 79.61 , 80.63 , 80.35 , 80.73 , 77.53 , 76.26 , 75.91 , 76.01 , 77.02 , 77.47] 
