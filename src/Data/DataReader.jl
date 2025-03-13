@@ -51,7 +51,8 @@ read_DataFrame(["Argentina", "Brazil"], disease="dengue)
 """
 function read_DataFrame(countries::Vector{String}; disease="dengue")
     sort!(countries)
-    path = joinpath(join(split(@__DIR__, "/")[1:end-2], "/"), "database", disease)
+    path = join(split(@__DIR__, "/")[1:end-2], "/")
+    path = joinpath(path, "database", disease)
     path_countries = filter!(x-> split(basename(x),".")[1] in countries,  readdir(path,join=true))
 
     res = Dict()
